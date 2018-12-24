@@ -52,10 +52,12 @@ dependencies {
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	compile("org.jetbrains.kotlin:kotlin-reflect")
 	runtime('org.springframework.boot:spring-boot-devtools')
-	runtime('org.postgresql:postgresql')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-	compile 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+	compile('org.jsoup:jsoup:1.11.3')
+	compile("org.springframework.boot:spring-boot-starter-security")
+	compile("org.springframework.boot:spring-boot-starter-freemarker")
+	compile("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 bootRun {
