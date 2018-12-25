@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ .message }}</title>
+    <title><#if message??>${message}</#if> - powered by jaylove</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
     <style>
         body {
@@ -32,12 +32,9 @@
 <div class="back-to-home"><a href="/">Home</a></div>
 <div class="clearfix"></div>
 <div class="message-container">
-    <p>{{ .message }}</p>
+    <p><#if message??>${message}</#if></p>
 
-    <p>{{if .url }}
-        <a href="{{ .url }}">Ok</a>
-        {{end}}
-    </p>
+    <p><#if url??><a href="${url}">Ok</a></#if></p>
 </div>
 
 </body>
