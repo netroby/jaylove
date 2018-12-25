@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{ .site_name }} - powered by daylove!</title>
+    <title><#if siteName??>${siteName}</#if> - powered by jaylove!</title>
     <meta name="description" content="{{.site_description}}"/>
     <link href="/rss" rel="alternate" type="application/rss+xml" title="daylove"/>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
