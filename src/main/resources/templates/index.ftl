@@ -59,20 +59,20 @@
 
     <div class="content">
         <div class="">
-            <a href="/">{{ .site_name }}</a>
+            <a href="/"><#if siteName>${siteName}</#if></a>
         </div>
 
-        {{if .username }}
+        <#if username>
 
         <div style="float:right">
-            Welcome {{ .username }}
+            Welcome ${username}
             <a href="/admin/logout">Logout</a>
         </div>
         <div style="width:92%;margin: 0px auto">
         <form action="/admin/save-blog-add" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
             <div class="form-group">
                 <label>Content:</label>
-                <textarea name="content" class="form-control">{{ .content }}</textarea></div>
+                <textarea name="content" class="form-control">${content}</textarea></div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit">Save</button>
@@ -80,38 +80,22 @@
             </div>
         </form>
         </div>
-        {{end}}
+        </#if>
         <div style="padding:0px 12px">
-            {{ .bloglist }}
+            ${content}
         </div>
         <div class="txtcenter">
 
             <div class="paginav">
-                <div style="float:left;width:150px;text-align:center"><a href="/?page={{ .next_page }}">Next page</a>
+                <div style="float:left;width:150px;text-align:center"><a href="/?page=${nextPage}">Next page</a>
                 </div>
-                <div style="float:left;width:150px;text-align:center"><a href="/?page={{ .prev_page }}">Previous
+                <div style="float:left;width:150px;text-align:center"><a href="/?page=${prevPage}">Previous
                     Page</a></div>
             </div>
 
         </div>
-        <div class="txtcenter">
-            Links:
-            <a href="https://www.netroby.com/" target="_blank">Hard Coder</a> |
-            <a href="http://www.coderbolg.com/" target="_blank">coderbolg</a> |
-            <a href="http://www.hostloc.com" target="_blank">hostloc</a> |
-            <a href="http://www.veryide.com/" target="_blank">VeryIDE</a> |
-            <a href="http://www.esobeauty.com" target="_blank">妍淑秀丽</a> |
-        </div>
         <div class="clearfix h10"></div>
-        <div class="txtcenter">Follow me: <a href="http://weibo.com/netroby">@weibo</a> <a
-                href="http://twitter.com/netroby">@twitter</a> <a href="https://github.com/netroby">@github</a>
-        </div>
-        <div class="txtcenter">Scan QR code and Donate me via alipay:<br/><img src="/assets/images/alipayme.jpg"
-                                                                               style="width:72px;height:72px"
-                                                                               alt="donate me via alipay"></div>
-        <div class="txtcenter">Donate me Bitcoin: <code>136MYemy5QmmBPLBLr1GHZfkES7CsoG4Qh</code></div>
-        <div class="clearfix h10"></div>
-        <div class="txtcenter">Powered by <a href="//github.com/netroby/daylove">daylove</a>
+        <div class="txtcenter">Powered by <a href="//github.com/netroby/jaylove">jaylove</a>
         </div>
     </div>
 </div>
