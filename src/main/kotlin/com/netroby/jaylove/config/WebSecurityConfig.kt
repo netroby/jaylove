@@ -19,24 +19,18 @@ class WebSecurityConfig(@Autowired val accountConfig: AccountConfig) : WebSecuri
                 .authorizeRequests()
                 .antMatchers(
                         HttpMethod.GET,
-                        "/",
                         "/assets/**",
                         "/*.html",
-                        "/about",
-                        "/view/*",
-                        "/rss",
                         "/favicon.ico",
                         "/assets/**",
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
                         "/webjars/**",
-                        "/swagger-resources/**",
-                        "/*/api-docs",
                         "/login",
                         "/logout"
                 ).permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/**").hasRole("ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/login")

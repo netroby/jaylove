@@ -66,10 +66,10 @@
 
         <div style="float:right">
             Welcome ${username}
-            <a href="/admin/logout">Logout</a>
+            <a href="/logout">Logout</a>
         </div>
         <div style="width:92%;margin: 0px auto">
-        <form action="/admin/save-blog-add" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+        <form action="/saveAdd" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
             <div class="form-group">
                 <label>Content:</label>
                 <textarea name="content" class="form-control"></textarea></div>
