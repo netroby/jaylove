@@ -54,6 +54,7 @@ dependencies {
 	runtime('org.springframework.boot:spring-boot-devtools')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile('org.mariadb.jdbc:mariadb-java-client:2.3.0')
 	compile ('com.alibaba:druid-spring-boot-starter:1.1.10')
 	compile('org.jsoup:jsoup:1.11.3')
 	compile("org.springframework.boot:spring-boot-starter-security")

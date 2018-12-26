@@ -59,10 +59,10 @@
 
     <div class="content">
         <div class="">
-            <a href="/"><#if siteName>${siteName}</#if></a>
+            <a href="/"><#if siteName??>${siteName}</#if></a>
         </div>
 
-        <#if username>
+        <#if username??>
 
         <div style="float:right">
             Welcome ${username}
@@ -72,7 +72,7 @@
         <form action="/admin/save-blog-add" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
             <div class="form-group">
                 <label>Content:</label>
-                <textarea name="content" class="form-control">${content}</textarea></div>
+                <textarea name="content" class="form-control"></textarea></div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit">Save</button>
@@ -82,14 +82,14 @@
         </div>
         </#if>
         <div style="padding:0px 12px">
-            ${content}
+            <#if content??>${content}</#if>
         </div>
         <div class="txtcenter">
 
             <div class="paginav">
-                <div style="float:left;width:150px;text-align:center"><a href="/?page=${nextPage}">Next page</a>
+                <div style="float:left;width:150px;text-align:center"><a href="/?page=<#if nextPage??>${nextPage}</#if>">Next page</a>
                 </div>
-                <div style="float:left;width:150px;text-align:center"><a href="/?page=${prevPage}">Previous
+                <div style="float:left;width:150px;text-align:center"><a href="/?page=<#if prevPage??>${prevPage}</#if>">Previous
                     Page</a></div>
             </div>
 
@@ -99,21 +99,5 @@
         </div>
     </div>
 </div>
-<script>
-    (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        i[r] = i[r] || function () {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
-        a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-    ga('create', 'UA-4450773-12', 'auto');
-    ga('send', 'pageview');
-</script>
 </body>
 </html>
