@@ -75,15 +75,30 @@
                 <textarea name="content" class="form-control"></textarea></div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
+
+                    <#if _csrf??>
+                        <input type="hidden" name="${_csrf.parameterName}"
+                               value="${_csrf.token}" />
+                    </#if>
                     <button type="submit">Save</button>
                 </div>
             </div>
         </form>
         </div>
         </#if>
+
         <div style="padding:0px 12px">
-            <#if content??>${content}</#if>
+
+            <#if result??>
+                <#list result as r>
+                    <div>${r.content}</div>
+                    <p>Post: <#if r.publishTime??>${(r.publishTime * 1000)?number_to_datetime?string("yyyy.MM.dd HH:mm")}</#if></p>
+                </#list>
+            </#if>
+
+
         </div>
+
         <div class="txtcenter">
 
             <div class="paginav">

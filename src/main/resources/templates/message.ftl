@@ -36,7 +36,7 @@
 <div class="message-container">
     <p><#if message??>${message}</#if></p>
 
-    <p><#if url??><a href="${url}">Ok</a></#if></p>
+    <p><#if url??><a href="${url}">Ok</a><#else><a href="/">Ok</a></#if></p>
 </div>
 
 </body>
