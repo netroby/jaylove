@@ -6,12 +6,14 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
     <style>
         body {
-            margin:0px;
-            padding:0px;
+            margin: 0px;
+            padding: 0px;
         }
-        .clearfix        {
-            clear:both
+
+        .clearfix {
+            clear: both
         }
+
         .message-container {
             width: 50%;
             height: 50%;
@@ -22,7 +24,7 @@
         .back-to-home {
             width: 100px;
             height: 24px;
-            margin:10px;
+            margin: 10px;
             float: right;
         }
 

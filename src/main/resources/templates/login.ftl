@@ -17,7 +17,7 @@
 </head>
 <body>
 <div class="container">
-<form action="/admin/login-process" method="post" enctype="multipart/form-data">
+<form action="/login" method="post" enctype="multipart/form-data">
     <table>
         <tr>
             <td>Username: </td>
@@ -28,7 +28,10 @@
             <td><input type="password" name="password"></td>
         </tr>
         <tr>
-            <td></td>
+            <td> <#if _csrf??>
+                    <input type="hidden" name="${_csrf.parameterName}"
+                           value="${_csrf.token}" />
+                </#if></td>
             <td><input type="submit" value="Login"></td>
         </tr>
     </table>
