@@ -12,17 +12,15 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
-import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.ModelAndView
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@Controller
+@RestController
+@RequestMapping("/api")
 class ApiController(
         @Autowired private val articleRepository: ArticleRepository,
         @Autowired private val prepareModelService: PrepareModelService,
@@ -33,7 +31,7 @@ class ApiController(
 
     private val logger = LoggerFactory.getLogger("index")
 
-    @GetMapping("/api")
+    @GetMapping("/")
     fun home(model: Model, @RequestParam(value = "page", defaultValue = "0") page: Int): ModelAndView {
         model.addAllAttributes(prepareModelService.getModel())
         val sort = Sort(Sort.Direction.DESC, "aid")
@@ -53,11 +51,11 @@ class ApiController(
         return ModelAndView("index")
     }
 
-    @RequestMapping("/api/login")
+    @RequestMapping("/login")
     fun login(): String {
         return "login"
     }
-    @RequestMapping("/api/logout")
+    @RequestMapping("/logout")
     fun logout(request: HttpServletRequest, response: HttpServletResponse): String {
         val auth = authAdapterService.getAuthentication()
         if (auth != null) {
@@ -66,7 +64,7 @@ class ApiController(
         return "redirect:/"
     }
 
-    @PostMapping("/api/save-blog-add")
+    @PostMapping("/save-blog-add")
     fun saveAdd(model: Model, articleAdd: ArticleAdd): ModelAndView {
         val article = Article(content = articleAdd.content,
                 publishStatus = 1 )
@@ -79,8 +77,10 @@ class ApiController(
         model.addAttribute("message", "Success")
         return ModelAndView("message")
     }
-    @PostMapping("/api/file-upload")
-    fun fileUpload(): String {
-        return "file upload"
+    @PostMapping("/file-upload")
+    fun fileUpload(@RequestParam("uploadfile") file: MultipartFile): Map<String, String> {
+        val ov = HashMap<String, String>()
+        ov.put("url", "http://www.baidu.com")
+        return ov
     }
 }
