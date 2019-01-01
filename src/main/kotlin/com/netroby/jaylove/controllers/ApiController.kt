@@ -32,40 +32,30 @@ class ApiController(
     private val logger = LoggerFactory.getLogger("index")
 
     @GetMapping("/")
-    fun home(model: Model, @RequestParam(value = "page", defaultValue = "0") page: Int): ModelAndView {
-        model.addAllAttributes(prepareModelService.getModel())
+    fun home(@RequestParam("token") token: String, @RequestParam(value = "page", defaultValue = "0") page: Int): Map<String, Any> {
         val sort = Sort(Sort.Direction.DESC, "aid")
         val pageable = PageRequest.of(page, 15, sort)
         val result = articleRepository.findAll(pageable)
-        model.addAttribute("result", result.content)
         logger.info("Got result: {}", result.content)
-        val role = SimpleGrantedAuthority("ROLE_ADMIN")
-        model.addAttribute("username", authAdapterService.getUserName())
-        model.addAttribute("isAuthenticated", authAdapterService.isAuthenticated())
-        model.addAttribute("nextPage", page+1)
         var prevPage = page - 1;
         if (prevPage < 0) {
             prevPage = 0;
         }
-        model.addAttribute("prevPage", prevPage)
-        return ModelAndView("index")
+        val blogList: List<String> = listOf("a", "b")
+        return mapOf("data" to blogList)
     }
 
-    @RequestMapping("/login")
-    fun login(): String {
-        return "login"
+    @PostMapping("/login")
+    fun login(@RequestParam("username") username: String, @RequestParam("password") password: String): Map<String, String> {
+        return mapOf("msg" to "Success", "token" to "1234")
     }
-    @RequestMapping("/logout")
-    fun logout(request: HttpServletRequest, response: HttpServletResponse): String {
-        val auth = authAdapterService.getAuthentication()
-        if (auth != null) {
-            SecurityContextLogoutHandler().logout(request, response, auth)
-        }
-        return "redirect:/"
+    @PostMapping("/logout")
+    fun logout(@RequestParam("token") token: String): Map<String, String> {
+        return mapOf("msg" to "success")
     }
 
     @PostMapping("/save-blog-add")
-    fun saveAdd(model: Model, articleAdd: ArticleAdd): ModelAndView {
+    fun saveAdd(articleAdd: ArticleAdd): Map<String, String> {
         val article = Article(content = articleAdd.content,
                 publishStatus = 1 )
         var articleString = article.toString()
@@ -74,13 +64,10 @@ class ApiController(
         }
         logger.info("article {}", articleString)
         this.articleRepository.save(article)
-        model.addAttribute("message", "Success")
-        return ModelAndView("message")
+        return mapOf("msg" to "success")
     }
     @PostMapping("/file-upload")
-    fun fileUpload(@RequestParam("uploadfile") file: MultipartFile): Map<String, String> {
-        val ov = HashMap<String, String>()
-        ov.put("url", "http://www.baidu.com")
-        return ov
+    fun fileUpload(@RequestParam("token") token : String, @RequestParam("uploadfile") file: MultipartFile): Map<String, String> {
+        return mapOf("url" to "http://www.baidu.com")
     }
 }
