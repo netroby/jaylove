@@ -6,7 +6,9 @@ import com.netroby.jaylove.repository.AccessTokenRepository
 import com.netroby.jaylove.service.AuthAdapterService
 import com.netroby.jaylove.service.PrepareModelService
 import com.netroby.jaylove.repository.ArticleRepository
+import com.netroby.jaylove.utils.HashUtils
 import com.netroby.jaylove.vo.AccessToken
+import com.netroby.jaylove.vo.ApiArticleAdd
 import com.netroby.jaylove.vo.Article
 import com.netroby.jaylove.vo.ArticleAdd
 import org.slf4j.LoggerFactory
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
+import java.time.Instant
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -39,6 +42,7 @@ class ApiController(
 
     @GetMapping("/")
     fun home(@RequestParam("token") token: String, @RequestParam(value = "page", defaultValue = "0") page: Int): Map<String, Any> {
+        tokenValidCheck(token)
         val sort = Sort(Sort.Direction.DESC, "aid")
         val pageable = PageRequest.of(page, 15, sort)
         val result = articleRepository.findAll(pageable)
@@ -55,7 +59,7 @@ class ApiController(
     fun login(@RequestParam("username") username: String, @RequestParam("password") password: String): Map<String, String> {
         return if (username == accountConfig.username && password == accountConfig.password) {
             val data = AccessToken()
-            data.token = "a,b,c,d" // TODO , set new token
+            data.token = HashUtils.sha256WithPrefix(Instant.EPOCH.epochSecond.toString(), "xkjdfksdljfkasljdfklajf")
             tokenRepository.save(data)
             mapOf("msg" to "Success", "token" to data.token)
         } else {
@@ -64,11 +68,16 @@ class ApiController(
     }
     @PostMapping("/logout")
     fun logout(@RequestParam("token") token: String): Map<String, String> {
+        val result = tokenRepository.findById(token)
+        if (result.isPresent) {
+            tokenRepository.delete(result.get())
+        }
         return mapOf("msg" to "success")
     }
 
     @PostMapping("/save-blog-add")
-    fun saveAdd(articleAdd: ArticleAdd): Map<String, String> {
+    fun saveAdd(articleAdd: ApiArticleAdd): Map<String, String> {
+        tokenValidCheck(articleAdd.token)
         val article = Article(content = articleAdd.content,
                 publishStatus = 1 )
         var articleString = article.toString()
@@ -81,6 +90,7 @@ class ApiController(
     }
     @PostMapping("/file-upload")
     fun fileUpload(@RequestParam("token") token : String, @RequestParam("uploadfile") file: MultipartFile): Map<String, String> {
+        tokenValidCheck(token)
         return mapOf("url" to "http://www.baidu.com")
     }
 
@@ -88,5 +98,11 @@ class ApiController(
     fun handleError(req: HttpServletRequest, ex: Exception): Map<String, String> {
         logger.error("Request: " + req.requestURL + " raised " + ex)
         return mapOf("msg" to ex.message!!)
+    }
+    fun tokenValidCheck(token : String) {
+        val result = tokenRepository.findById(token)
+        if (!result.isPresent) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "token not valid")
+        }
     }
 }
