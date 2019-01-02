@@ -14,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -57,7 +59,7 @@ class ApiController(
             tokenRepository.save(data)
             mapOf("msg" to "Success", "token" to data.token)
         } else {
-            mapOf("msg" to "failed")
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "failed");
         }
     }
     @PostMapping("/logout")
