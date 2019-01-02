@@ -1,13 +1,17 @@
 package com.netroby.jaylove.controllers
 
+import com.netroby.jaylove.config.AccountConfig
 import com.netroby.jaylove.config.JayloveConfig
+import com.netroby.jaylove.repository.AccessTokenRepository
 import com.netroby.jaylove.service.AuthAdapterService
 import com.netroby.jaylove.service.PrepareModelService
 import com.netroby.jaylove.repository.ArticleRepository
+import com.netroby.jaylove.vo.AccessToken
 import com.netroby.jaylove.vo.Article
 import com.netroby.jaylove.vo.ArticleAdd
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -23,9 +27,9 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("/api")
 class ApiController(
         @Autowired private val articleRepository: ArticleRepository,
-        @Autowired private val prepareModelService: PrepareModelService,
-        @Autowired private val authAdapterService: AuthAdapterService,
-        @Autowired private val jayloveConfig: JayloveConfig
+        @Autowired private val tokenRepository: AccessTokenRepository,
+        @Autowired private val jayloveConfig: JayloveConfig,
+        @Autowired private val accountConfig: AccountConfig
         ) {
 
 
@@ -37,7 +41,7 @@ class ApiController(
         val pageable = PageRequest.of(page, 15, sort)
         val result = articleRepository.findAll(pageable)
         logger.info("Got result: {}", result.content)
-        var prevPage = page - 1;
+        var prevPage = page - 1
         if (prevPage < 0) {
             prevPage = 0;
         }
@@ -47,7 +51,14 @@ class ApiController(
 
     @PostMapping("/login")
     fun login(@RequestParam("username") username: String, @RequestParam("password") password: String): Map<String, String> {
-        return mapOf("msg" to "Success", "token" to "1234")
+        return if (username == accountConfig.username && password == accountConfig.password) {
+            val data = AccessToken()
+            data.token = "a,b,c,d" // TODO , set new token
+            tokenRepository.save(data)
+            mapOf("msg" to "Success", "token" to data.token)
+        } else {
+            mapOf("msg" to "failed")
+        }
     }
     @PostMapping("/logout")
     fun logout(@RequestParam("token") token: String): Map<String, String> {
