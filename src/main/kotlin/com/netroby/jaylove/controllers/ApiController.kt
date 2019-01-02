@@ -83,4 +83,10 @@ class ApiController(
     fun fileUpload(@RequestParam("token") token : String, @RequestParam("uploadfile") file: MultipartFile): Map<String, String> {
         return mapOf("url" to "http://www.baidu.com")
     }
+
+    @ExceptionHandler(ResponseStatusException::class)
+    fun handleError(req: HttpServletRequest, ex: Exception): Map<String, String> {
+        logger.error("Request: " + req.requestURL + " raised " + ex)
+        return mapOf("msg" to ex.message!!)
+    }
 }
