@@ -3,6 +3,7 @@ package com.netroby.jaylove.service.impl
 import com.netroby.jaylove.config.AwsSecurityConfig
 import com.netroby.jaylove.config.JayloveConfig
 import com.netroby.jaylove.service.StorageService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
@@ -25,6 +26,8 @@ class StorageServiceImpl (
         @Autowired private val awsSecretKey: AwsSecurityConfig,
         @Autowired private val jayloveConfig: JayloveConfig
         ): StorageService {
+
+    private val logger = LoggerFactory.getLogger("StorageService")
     override fun upload(upFile: MultipartFile) : String {
         val awsCreds = AwsBasicCredentials.create(
                 awsSecretKey.accessKeyId,
@@ -40,12 +43,12 @@ class StorageServiceImpl (
             s32.putObject(PutObjectRequest.builder().bucket(awsSecretKey.bucket).key(fileName)
                     .build(), RequestBody.fromBytes(upFile.bytes))
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.info("upload error: {}", e)
         }
 
         return fileUrl
     }
     private fun generateFileName(multiPart: MultipartFile): String {
-        return Date().getTime().toString() + "-" + multiPart.originalFilename!!.replace(" ", "_")
+        return Date().time.toString() + "-" + multiPart.originalFilename!!.replace(" ", "_")
     }
 }
