@@ -6,6 +6,7 @@ import com.netroby.jaylove.repository.AccessTokenRepository
 import com.netroby.jaylove.service.AuthAdapterService
 import com.netroby.jaylove.service.PrepareModelService
 import com.netroby.jaylove.repository.ArticleRepository
+import com.netroby.jaylove.service.StorageService
 import com.netroby.jaylove.utils.HashUtils
 import com.netroby.jaylove.vo.AccessToken
 import com.netroby.jaylove.vo.ApiArticleAdd
@@ -34,7 +35,8 @@ class ApiController(
         @Autowired private val articleRepository: ArticleRepository,
         @Autowired private val tokenRepository: AccessTokenRepository,
         @Autowired private val jayloveConfig: JayloveConfig,
-        @Autowired private val accountConfig: AccountConfig
+        @Autowired private val accountConfig: AccountConfig,
+        @Autowired private val storageService: StorageService
         ) {
 
 
@@ -47,12 +49,7 @@ class ApiController(
         val pageable = PageRequest.of(page, 15, sort)
         val result = articleRepository.findAll(pageable)
         logger.info("Got result: {}", result.content)
-        var prevPage = page - 1
-        if (prevPage < 0) {
-            prevPage = 0;
-        }
-        val blogList: List<String> = listOf("a", "b")
-        return mapOf("data" to blogList)
+        return mapOf("data" to result.content)
     }
 
     @PostMapping("/login")
@@ -91,7 +88,8 @@ class ApiController(
     @PostMapping("/file-upload")
     fun fileUpload(@RequestParam("token") token : String, @RequestParam("uploadfile") file: MultipartFile): Map<String, String> {
         tokenValidCheck(token)
-        return mapOf("url" to "http://www.baidu.com")
+        val url = storageService.upload(file)
+        return mapOf("url" to url)
     }
 
     @ExceptionHandler(ResponseStatusException::class)
