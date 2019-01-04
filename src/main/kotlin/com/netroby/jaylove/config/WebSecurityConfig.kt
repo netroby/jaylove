@@ -28,7 +28,8 @@ class WebSecurityConfig(@Autowired val accountConfig: AccountConfig) : WebSecuri
                         "/**/*.js",
                         "/webjars/**",
                         "/login",
-                        "/logout"
+                        "/logout",
+                        "/api/**"
                 ).permitAll()
                 .antMatchers("/**").hasRole("ADMIN")
                 .and()
