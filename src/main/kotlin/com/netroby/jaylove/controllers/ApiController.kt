@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.ui.Model
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
@@ -30,7 +31,6 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@RequestMapping("/api")
 class ApiController(
         @Autowired private val articleRepository: ArticleRepository,
         @Autowired private val tokenRepository: AccessTokenRepository,
@@ -42,7 +42,7 @@ class ApiController(
 
     private val logger = LoggerFactory.getLogger("index")
 
-    @GetMapping("/")
+    @GetMapping("/api")
     fun home(@RequestParam("token") token: String, @RequestParam(value = "page", defaultValue = "0") page: Int): Map<String, Any> {
         tokenValidCheck(token)
         val sort = Sort(Sort.Direction.DESC, "aid")
@@ -52,7 +52,7 @@ class ApiController(
         return mapOf("data" to result.content)
     }
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     fun login(@RequestParam("username") username: String, @RequestParam("password") password: String): Map<String, String> {
         return if (username == accountConfig.username && password == accountConfig.password) {
             val data = AccessToken()
@@ -63,7 +63,7 @@ class ApiController(
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "failed");
         }
     }
-    @PostMapping("/logout")
+    @PostMapping("/api/logout")
     fun logout(@RequestParam("token") token: String): Map<String, String> {
         val result = tokenRepository.findById(token)
         if (result.isPresent) {
@@ -72,7 +72,7 @@ class ApiController(
         return mapOf("msg" to "success")
     }
 
-    @PostMapping("/save-blog-add")
+    @PostMapping("/api/save-blog-add")
     fun saveAdd(articleAdd: ApiArticleAdd): Map<String, String> {
         tokenValidCheck(articleAdd.token)
         val article = Article(content = articleAdd.content,
@@ -85,14 +85,14 @@ class ApiController(
         this.articleRepository.save(article)
         return mapOf("msg" to "success")
     }
-    @PostMapping("/file-upload")
+    @PostMapping("/api/file-upload")
     fun fileUpload(@RequestParam("token") token : String, @RequestParam("uploadfile") file: MultipartFile): Map<String, String> {
         tokenValidCheck(token)
         val url = storageService.upload(file)
         return mapOf("url" to url)
     }
 
-    @ExceptionHandler(ResponseStatusException::class)
+    @ExceptionHandler(Exception::class)
     fun handleError(req: HttpServletRequest, ex: Exception): Map<String, String> {
         logger.error("Request: " + req.requestURL + " raised " + ex)
         return mapOf("msg" to ex.message!!)

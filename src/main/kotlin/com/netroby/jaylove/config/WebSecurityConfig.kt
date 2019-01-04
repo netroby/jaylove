@@ -16,9 +16,9 @@ class WebSecurityConfig(@Autowired val accountConfig: AccountConfig) : WebSecuri
     override fun configure(http: HttpSecurity) {
         http
                 //.csrf().disable() // TODO  处理csrf
+                .csrf().ignoringAntMatchers("/api/**").and()
                 .authorizeRequests()
                 .antMatchers(
-                        HttpMethod.GET,
                         "/assets/**",
                         "/*.html",
                         "/favicon.ico",
@@ -29,9 +29,12 @@ class WebSecurityConfig(@Autowired val accountConfig: AccountConfig) : WebSecuri
                         "/webjars/**",
                         "/login",
                         "/logout",
-                        "/api/**"
+                        "/api/login",
+                        "/api/logout",
+                        "/api/save-blog-add",
+                        "/api/file-upload"
                 ).permitAll()
-                .antMatchers("/**").hasRole("ADMIN")
+                .antMatchers("/", "/saveAdd").hasRole("ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/login")
