@@ -13,9 +13,7 @@ jaylove:
     cdnUrl: "https://cdn.netroby.com/"
 
 aws:
-  access_key_id: "xxxxxx"
-  secret_access_key:  "xxx"
+  accessKeyId: "xxxxxx"
+  secretAccessKey:  "xxx"
   region: "us-east-1"
-  bucket: "cdn.netroby.com"
-
 ```
