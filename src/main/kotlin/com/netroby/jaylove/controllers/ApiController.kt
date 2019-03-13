@@ -1,5 +1,6 @@
 package com.netroby.jaylove.controllers
 
+import com.alibaba.fastjson.JSON
 import com.netroby.jaylove.config.AccountConfig
 import com.netroby.jaylove.config.JayloveConfig
 import com.netroby.jaylove.repository.AccessTokenRepository
@@ -14,6 +15,7 @@ import com.netroby.jaylove.vo.Article
 import com.netroby.jaylove.vo.ArticleAdd
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.configurationprocessor.json.JSONObject
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -42,7 +44,7 @@ class ApiController(
 
     private val logger = LoggerFactory.getLogger("index")
 
-    @GetMapping("/api")
+    @PostMapping("/api", "/api/list")
     fun home(@RequestParam("token") token: String, @RequestParam(value = "page", defaultValue = "0") page: Int): Map<String, Any> {
         tokenValidCheck(token)
         val sort = Sort(Sort.Direction.DESC, "aid")
@@ -53,8 +55,8 @@ class ApiController(
     }
 
     @PostMapping("/api/login")
-    fun login(@RequestParam("username") username: String, @RequestParam("password") password: String): Map<String, String> {
-        return if (username == accountConfig.username && password == accountConfig.password) {
+    fun login(@RequestBody req: Map<String, Any>): Map<String, String> {
+        return if (req["username"].toString() == accountConfig.username && req["password"].toString() == accountConfig.password) {
             val data = AccessToken()
             data.token = HashUtils.sha256WithPrefix(Instant.EPOCH.epochSecond.toString(), "xkjdfksdljfkasljdfklajf")
             tokenRepository.save(data)
@@ -73,10 +75,10 @@ class ApiController(
     }
 
     @PostMapping("/api/save-blog-add")
-    fun saveAdd(articleAdd: ApiArticleAdd): Map<String, String> {
+    fun saveAdd(@RequestBody articleAdd: ApiArticleAdd): Map<String, String> {
         tokenValidCheck(articleAdd.token)
         val article = Article(content = articleAdd.content,
-                publishStatus = 1 )
+                publishStatus = 1, images = articleAdd.images)
         var articleString = article.toString()
         if (articleString.length > 220) {
             articleString = articleString.substring(0..220)

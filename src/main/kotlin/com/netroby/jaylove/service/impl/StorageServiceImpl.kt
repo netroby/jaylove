@@ -39,8 +39,20 @@ class StorageServiceImpl (
         var fileUrl = ""
         try {
             val fileName = generateFileName(upFile)
-            fileUrl = jayloveConfig.site["cdnUrl"] + "/" + awsSecretKey.bucket + "/" + fileName
-            s32.putObject(PutObjectRequest.builder().bucket(awsSecretKey.bucket).key(fileName)
+            logger.info("Now will upload file {}", fileName)
+            logger.info("Target bucket: {}", awsSecretKey.bucket)
+            fileUrl = jayloveConfig.site["cdnUrl"] + "/"  + fileName
+            var cType = "image/jpeg"
+            if (fileName.endsWith(".jpg")) {
+                cType = "image/jpeg"
+            }
+            if (fileName.endsWith(".png")) {
+                cType = "image/png"
+            }
+            if (fileName.endsWith(".gif")) {
+                cType = "image/gif"
+            }
+            s32.putObject(PutObjectRequest.builder().bucket(awsSecretKey.bucket).key(fileName).contentType(cType)
                     .build(), RequestBody.fromBytes(upFile.bytes))
         } catch (e: Exception) {
             logger.info("upload error: {}", e)
@@ -49,6 +61,6 @@ class StorageServiceImpl (
         return fileUrl
     }
     private fun generateFileName(multiPart: MultipartFile): String {
-        return Date().time.toString() + "-" + multiPart.originalFilename!!.replace(" ", "_")
+        return Date().time.toString() + "-" + multiPart.originalFilename!!.replace(" ", "_").replace("/", "_")
     }
 }

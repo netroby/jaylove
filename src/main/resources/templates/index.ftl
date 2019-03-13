@@ -92,7 +92,9 @@
             <#if result??>
                 <#list result as r>
                     <div>${r.content}</div>
+                    <#if r.images??><div>${r.images}</div></#if>
                     <p>Post: <#if r.publishTime??>${(r.publishTime * 1000)?number_to_datetime?string("yyyy.MM.dd HH:mm")}</#if></p>
+                    <hr />
                 </#list>
             </#if>
 

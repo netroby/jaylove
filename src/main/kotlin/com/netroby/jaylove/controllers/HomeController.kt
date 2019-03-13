@@ -1,5 +1,6 @@
 package com.netroby.jaylove.controllers
 
+import com.alibaba.fastjson.JSON
 import com.netroby.jaylove.config.JayloveConfig
 import com.netroby.jaylove.service.AuthAdapterService
 import com.netroby.jaylove.service.PrepareModelService
@@ -39,8 +40,26 @@ class HomeController(
         val sort = Sort(Sort.Direction.DESC, "aid")
         val pageable = PageRequest.of(page, 15, sort)
         val result = articleRepository.findAll(pageable)
-        model.addAttribute("result", result.content)
+        var data = result.content
+
+        for (item in data) {
+            var  tmpImgHtml = ""
+            logger.info("item {}", item)
+
+            if (item.images != null) {
+                logger.info("item images {}", item.images)
+                var tempImageList = JSON.parseArray(item.images)
+                if (tempImageList != null) {
+                    for (tmpImg in tempImageList) {
+                        tmpImgHtml += "<p><img src=\"$tmpImg\" /></p>"
+                    }
+                    item.images = tmpImgHtml
+                }
+            }
+        }
+        model.addAttribute("result", data)
         logger.info("Got result: {}", result.content)
+        logger.info("Processed data: {}", data)
         val role = SimpleGrantedAuthority("ROLE_ADMIN")
         model.addAttribute("username", authAdapterService.getUserName())
         model.addAttribute("isAuthenticated", authAdapterService.isAuthenticated())
