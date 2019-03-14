@@ -25,4 +25,12 @@ jaylove:
     name: Love
     description: "Everything love"
     cdnUrl:
-
+logging:
+  level:
+    root: trace
+    org:
+      apache:
+        tomcat:
+          util:
+            net:
+              NioEndpoint: info

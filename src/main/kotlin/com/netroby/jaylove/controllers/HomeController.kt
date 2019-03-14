@@ -46,7 +46,6 @@ class HomeController(
             var  tmpImgHtml = ""
             logger.info("item {}", item)
 
-            if (item.images != null) {
                 logger.info("item images {}", item.images)
                 var tempImageList = JSON.parseArray(item.images)
                 if (tempImageList != null) {
@@ -55,12 +54,10 @@ class HomeController(
                     }
                     item.images = tmpImgHtml
                 }
-            }
         }
         model.addAttribute("result", data)
         logger.info("Got result: {}", result.content)
         logger.info("Processed data: {}", data)
-        val role = SimpleGrantedAuthority("ROLE_ADMIN")
         model.addAttribute("username", authAdapterService.getUserName())
         model.addAttribute("isAuthenticated", authAdapterService.isAuthenticated())
         model.addAttribute("nextPage", page+1)

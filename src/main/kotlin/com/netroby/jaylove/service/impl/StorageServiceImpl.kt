@@ -61,6 +61,6 @@ class StorageServiceImpl (
         return fileUrl
     }
     private fun generateFileName(multiPart: MultipartFile): String {
-        return Date().time.toString() + "-" + multiPart.originalFilename!!.replace(" ", "_").replace("/", "_")
+        return Date().time.toString() + multiPart.originalFilename!!.replace(" ", "_").replace("/", "_")
     }
 }

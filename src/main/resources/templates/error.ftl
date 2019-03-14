@@ -12,6 +12,7 @@
         <div class="txtcenter">
             <p>There is some error</p>
             <p><#if exception??>${exception}</#if></p>
+            <p><#if trace??>${trace}</#if></p>
             <p><#if url??>
                     <a href="${url}">Ok</a>
                 </#if>

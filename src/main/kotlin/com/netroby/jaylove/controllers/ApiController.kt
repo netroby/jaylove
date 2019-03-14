@@ -1,36 +1,24 @@
 package com.netroby.jaylove.controllers
 
-import com.alibaba.fastjson.JSON
 import com.netroby.jaylove.config.AccountConfig
 import com.netroby.jaylove.config.JayloveConfig
 import com.netroby.jaylove.repository.AccessTokenRepository
-import com.netroby.jaylove.service.AuthAdapterService
-import com.netroby.jaylove.service.PrepareModelService
 import com.netroby.jaylove.repository.ArticleRepository
 import com.netroby.jaylove.service.StorageService
 import com.netroby.jaylove.utils.HashUtils
 import com.netroby.jaylove.vo.AccessToken
 import com.netroby.jaylove.vo.ApiArticleAdd
 import com.netroby.jaylove.vo.Article
-import com.netroby.jaylove.vo.ArticleAdd
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.configurationprocessor.json.JSONObject
-import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
-import org.springframework.ui.Model
-import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
-import org.springframework.web.servlet.ModelAndView
 import java.time.Instant
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @RestController
 class ApiController(
@@ -45,13 +33,16 @@ class ApiController(
     private val logger = LoggerFactory.getLogger("index")
 
     @PostMapping("/api", "/api/list")
-    fun home(@RequestParam("token") token: String, @RequestParam(value = "page", defaultValue = "0") page: Int): Map<String, Any> {
-        tokenValidCheck(token)
+    fun home(@RequestBody req: Map<String, Any>): Map<String, Any> {
+        tokenValidCheck(req["token"].toString())
         val sort = Sort(Sort.Direction.DESC, "aid")
-        val pageable = PageRequest.of(page, 15, sort)
+        val pageable = PageRequest.of(req["page"].toString().toInt(), 15, sort)
         val result = articleRepository.findAll(pageable)
-        logger.info("Got result: {}", result.content)
-        return mapOf("data" to result.content)
+        if (!result.isEmpty) {
+            logger.info("Got result: {}", result.content)
+            return mapOf("data" to result.content)
+        }
+        return mapOf("data" to arrayOf<Any>())
     }
 
     @PostMapping("/api/login")
@@ -94,13 +85,12 @@ class ApiController(
         return mapOf("url" to url)
     }
 
-    @ExceptionHandler(Exception::class)
-    fun handleError(req: HttpServletRequest, ex: Exception): Map<String, String> {
-        logger.error("Request: " + req.requestURL + " raised " + ex)
-        return mapOf("msg" to ex.message!!)
-    }
     fun tokenValidCheck(token : String) {
+        logger.info("try to get token: {}", token)
         val result = tokenRepository.findById(token)
+        if (result != null) {
+            logger.info("Got token: {}", result.get())
+        }
         if (!result.isPresent) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "token not valid")
         }
