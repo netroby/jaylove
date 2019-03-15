@@ -43,6 +43,10 @@ repositories {
 	maven { url "https://repo.spring.io/milestone" }
 }
 
+configurations {
+
+	compile.exclude module: 'spring-boot-starter-tomcat'
+}
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')
@@ -63,6 +67,8 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-configuration-processor")
 	compile("software.amazon.awssdk:s3:2.2.0")
 	compile('com.alibaba:fastjson:1.2.49')
+	compile 'org.springframework.boot:spring-boot-starter-undertow'
+
 }
 
 bootRun {

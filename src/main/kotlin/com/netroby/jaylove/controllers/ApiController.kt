@@ -88,9 +88,7 @@ class ApiController(
     fun tokenValidCheck(token : String) {
         logger.info("try to get token: {}", token)
         val result = tokenRepository.findById(token)
-        if (result != null) {
-            logger.info("Got token: {}", result.get())
-        }
+        logger.info("Got token: {}", result.get())
         if (!result.isPresent) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "token not valid")
         }

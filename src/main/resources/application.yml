@@ -14,7 +14,10 @@ spring:
       maxWait: 60000
       validationQuery: SELECT 1
       filters: stat,wall
+
 server:
+  compression:
+    enabled: true
   port: 8082
 account:
   username: admin
