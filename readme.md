@@ -18,3 +18,7 @@ The document will told you how to install and how to run jaylove app
 ![Scan QRCode donate me via Alipay](https://www.netroby.com/assets/images/alipayme.jpg)
 
 **Scan QRCode donate me via Alipay**
+
+
+
+[Buy aliyun cloud server, start from %20 of prize.](https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=f2zi8g3h)
